@@ -1,0 +1,17 @@
+.toastContainer {
+  position: fixed;
+  top: 4.8rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 9999;
+  max-width: 350px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .toastContainer {
+    width: 300px;
+  }
+}
