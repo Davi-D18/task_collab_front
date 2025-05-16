@@ -1,11 +1,11 @@
+import { Clock } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthContext"
-import { Clock } from "lucide-react"
 import styles from "./Login.module.scss"
 
 const Login = () => {
-  const [email, setEmail] = useState("")
+  const [credential, setCredential] = useState("")
   const [password, setPassword] = useState("")
   const { login, loading } = useAuth()
 
@@ -13,7 +13,7 @@ const Login = () => {
     e.preventDefault()
     e.stopPropagation();
     
-    await login(email, password)
+    await login(credential, password)
   }
 
   return (
@@ -21,24 +21,24 @@ const Login = () => {
       <div className={styles.loginCard}>
         <div className={styles.logoContainer}>
           <Clock size={40} className={styles.logoIcon} />
-          <h1 className={styles.logoText}>TimeCapsule</h1>
+          <h1 className={styles.logoText}>TaskCollab</h1>
         </div>
 
         <h2 className={styles.title}>Bem-vindo de volta</h2>
-        <p className={styles.subtitle}>Entre para acessar suas memórias</p>
+        <p className={styles.subtitle}>Entre para acessar suas tarefas</p>
 
         <form onSubmit={(e) => handleSubmit(e)} className={styles.form}>
           <div className={styles.formGroup}>
-            <label htmlFor="email" className={styles.label}>
-              Email
+            <label htmlFor="credential" className={styles.label}>
+              Email ou Nome de Usuário
             </label>
             <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="credential"
+              type="text"
+              value={credential}
+              onChange={(e) => setCredential(e.target.value)}
               className={styles.input}
-              placeholder="seu@email.com"
+              placeholder="seu@email.com ou seu_usuario"
               required
             />
           </div>

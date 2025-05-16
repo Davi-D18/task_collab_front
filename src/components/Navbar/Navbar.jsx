@@ -1,7 +1,7 @@
+import { Clock, LogOut, Menu, User, X } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthContext"
-import { Menu, X, Clock, LogOut, User } from "lucide-react"
 import styles from "./Navbar.module.scss"
 
 const Navbar = () => {
@@ -17,7 +17,7 @@ const Navbar = () => {
       <div className={styles.container}>
         <Link to="/" className={styles.logo}>
           <Clock className={styles.logoIcon} />
-          <span>TimeCapsule</span>
+          <span>TaskCollab</span>
         </Link>
 
         <button className={styles.menuButton} onClick={toggleMenu}>
@@ -28,10 +28,7 @@ const Navbar = () => {
           {isAuthenticated ? (
             <>
               <Link to="/" className={styles.navLink} onClick={toggleMenu}>
-                Memórias
-              </Link>
-              <Link to="/public" className={styles.navLink} onClick={toggleMenu}>
-                Públicas
+                Tarefas
               </Link>
               <div className={styles.userSection}>
                 <div className={styles.userInfo}>

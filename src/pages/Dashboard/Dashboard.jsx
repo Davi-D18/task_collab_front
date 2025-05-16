@@ -1,30 +1,30 @@
-import { useState, useEffect } from "react"
+import { Clock, Plus } from "lucide-react"
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { memoryService } from "../../services/api"
-import { useToast } from "../../components/Toast/ToastContainer"
-import MemoryCard from "../../components/MemoryCard/MemoryCard"
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
-import { Plus, Clock } from "lucide-react"
+import TaskCard from "../../components/TaskCard/TaskCard"
+import { useToast } from "../../components/Toast/ToastContainer"
+import { taskService } from "../../services/api"
 import styles from "./Dashboard.module.scss"
 
 const Dashboard = () => {
-  const [memories, setMemories] = useState([])
+  const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
   const { toast } = useToast()
 
   useEffect(() => {
-    fetchMemories()
+    fetchTasks()
   }, [])
 
-  const fetchMemories = async () => {
+  const fetchTasks = async () => {
     try {
       setLoading(true)
-      const response = await memoryService.getAll()
-      setMemories(response.data)
+      const response = await taskService.getAll()
+      setTasks(response.data)
     } catch (error) {
       toast({
-        title: "Erro ao carregar memórias",
-        description: "Não foi possível carregar suas memórias. Tente novamente mais tarde.",
+        title: "Erro ao carregar tarefas",
+        description: "Não foi possível carregar suas tarefas. Tente novamente mais tarde.",
         type: "destructive",
       })
     } finally {
@@ -34,16 +34,16 @@ const Dashboard = () => {
 
   const handleDelete = async (id) => {
     try {
-      await memoryService.delete(id)
-      setMemories(memories.filter((memory) => memory.id !== id))
+      await taskService.delete(id)
+      setTasks(tasks.filter((task) => task.id !== id))
       toast({
-        title: "Memória excluída",
-        description: "Sua memória foi excluída com sucesso.",
+        title: "Tarefa excluída",
+        description: "Sua tarefa foi excluída com sucesso.",
       })
     } catch (error) {
       toast({
-        title: "Erro ao excluir memória",
-        description: "Não foi possível excluir sua memória. Tente novamente mais tarde.",
+        title: "Erro ao excluir tarefa",
+        description: "Não foi possível excluir sua tarefa. Tente novamente mais tarde.",
         type: "destructive",
       })
     }
@@ -52,30 +52,30 @@ const Dashboard = () => {
   return (
     <div className={styles.dashboard}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Suas Memórias</h1>
+        <h1 className={styles.title}>Suas Tarefas</h1>
         <Link to="/create" className={styles.createButton}>
           <Plus size={20} />
-          <span>Nova Memória</span>
+          <span>Nova Tarefa</span>
         </Link>
       </div>
 
       {loading ? (
         <LoadingSpinner />
-      ) : memories.length > 0 ? (
-        <div className={styles.memoriesGrid}>
-          {memories.map((memory) => (
-            <div key={memory.id} className={styles.memoryItem}>
-              <MemoryCard memory={memory} onDelete={handleDelete} />
+      ) : tasks.length > 0 ? (
+        <div className={styles.tasksGrid}>
+          {tasks.map((task) => (
+            <div key={task.id} className={styles.taskItem}>
+              <TaskCard task={task} onDelete={handleDelete} />
             </div>
           ))}
         </div>
       ) : (
         <div className={styles.emptyState}>
           <Clock size={64} className={styles.emptyIcon} />
-          <h2 className={styles.emptyTitle}>Nenhuma memória desbloqueada</h2>
-          <p className={styles.emptyText}>Você ainda não tem memórias desbloqueadas ou não criou nenhuma memória.</p>
+          <h2 className={styles.emptyTitle}>Nenhuma tarefa encontrada</h2>
+          <p className={styles.emptyText}>Você ainda não tem tarefas cadastradas.</p>
           <Link to="/create" className={styles.emptyButton}>
-            Criar Primeira Memória
+            Criar Primeira Tarefa
           </Link>
         </div>
       )}

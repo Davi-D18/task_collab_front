@@ -1,7 +1,7 @@
-import { createContext, useState, useContext, useEffect } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { api } from "../services/api"
 import { useToast } from "../components/Toast/ToastContainer"
+import { api } from "../services/api"
 
 const AuthContext = createContext({})
 
@@ -17,8 +17,8 @@ export const AuthProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    const token = localStorage.getItem("@TimeCapsule:token")
-    const storedUser = localStorage.getItem("@TimeCapsule:user")
+    const token = localStorage.getItem("@TaskCollab:token")
+    const storedUser = localStorage.getItem("@TaskCollab:user")
 
     if (token && storedUser) {
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`
@@ -28,35 +28,53 @@ export const AuthProvider = ({ children }) => {
     setLoading(false)
   }, [])
 
-  const login = async (email, password) => {
+  const decodeJWT = (token) => {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Erro ao decodificar token:', error);
+      return null;
+    }
+  };
+
+  const login = async (credential, password) => {
     try {
       setLoading(true)
-      const response = await api.post("/accounts/login", {
-        email: email,
+      const response = await api.post("/accounts/login/", {
+        credential: credential,
         password: password,
       })
 
       const { access, refresh, user } = response.data
 
-      const cleanedUsername = user.username.replace(/_/g, " ");
+      // Decodifica o token para obter as informações do usuário
+      const decodedToken = decodeJWT(access);
+      const username = decodedToken?.username || user.username;
+      const cleanedUsername = username.replace(/_/g, " ");
 
-      localStorage.setItem("@TimeCapsule:token", access)
-      localStorage.setItem("@TimeCapsule:refresh", refresh)
+      localStorage.setItem("@TaskCollab:token", access)
+      localStorage.setItem("@TaskCollab:refresh", refresh)
 
       api.defaults.headers.common["Authorization"] = `Bearer ${access}`
 
-      // Fetch user data or use JWT payload
-      const userData = { user } // Simplified for now
+      // Usa o username do token decodificado
+      const userData = { ...user, username: cleanedUsername };
       localStorage.setItem(
-        "@TimeCapsule:user",
-        JSON.stringify({ ...user, username: cleanedUsername })
+        "@TaskCollab:user",
+        JSON.stringify(userData)
       );
 
-      setUser({ ...user, username: cleanedUsername });
+      setUser(userData);
 
       toast({
         title: "Login bem-sucedido",
-        description: `Bem-vindo ao TimeCapsule ${cleanedUsername}!`,
+        description: `Bem-vindo ao TaskCollab ${cleanedUsername}!`,
       })
 
       navigate("/")
@@ -66,6 +84,7 @@ export const AuthProvider = ({ children }) => {
         description: error.response?.data?.detail || "Credenciais inválidas",
         type: "destructive",
       })
+      console.log(error)
     } finally {
       setLoading(false)
     }
@@ -77,7 +96,7 @@ export const AuthProvider = ({ children }) => {
 
       const usernameSemEspacos = substituirEspacosPorUnderline(name)
 
-      await api.post("/accounts/register", {
+      await api.post("/accounts/register/", {
         email: email,
         username: usernameSemEspacos,
         password: password,
@@ -102,9 +121,9 @@ export const AuthProvider = ({ children }) => {
   }
 
   const logout = () => {
-    localStorage.removeItem("@TimeCapsule:token")
-    localStorage.removeItem("@TimeCapsule:refresh")
-    localStorage.removeItem("@TimeCapsule:user")
+    localStorage.removeItem("@TaskCollab:token")
+    localStorage.removeItem("@TaskCollab:refresh")
+    localStorage.removeItem("@TaskCollab:user")
     delete api.defaults.headers.common["Authorization"]
     setUser(null)
     navigate("/login")
@@ -112,7 +131,7 @@ export const AuthProvider = ({ children }) => {
 
   const refreshToken = async () => {
     try {
-      const refresh = localStorage.getItem("@TimeCapsule:refresh")
+      const refresh = localStorage.getItem("@TaskCollab:refresh")
 
       if (!refresh) {
         throw new Error("No refresh token available")
@@ -123,7 +142,7 @@ export const AuthProvider = ({ children }) => {
       })
 
       const { access } = response.data
-      localStorage.setItem("@TimeCapsule:token", access)
+      localStorage.setItem("@TaskCollab:token", access)
       api.defaults.headers.common["Authorization"] = `Bearer ${access}`
 
       return access

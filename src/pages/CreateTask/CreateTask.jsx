@@ -7,8 +7,9 @@ import styles from "./CreateTask.module.scss"
 const CreateTask = () => {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
-  const [priority, setPriority] = useState("media")
-  const [status, setStatus] = useState("pendente")
+  const [priority, setPriority] = useState("M")
+  const [status, setStatus] = useState("P")
+  const [deadline, setDeadline] = useState("")
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const { toast } = useToast()
@@ -16,7 +17,7 @@ const CreateTask = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!title || !description) {
+    if (!title || !description || !deadline) {
       toast({
         title: "Campos obrigatórios",
         description: "Por favor, preencha todos os campos.",
@@ -30,13 +31,18 @@ const CreateTask = () => {
       const storedData = localStorage.getItem('@TaskCollab:user')
       const user = JSON.parse(storedData)
 
-      await taskService.create({
-        usuario: user.id,
+      const data = {
+        usuario: user.username,
         titulo: title,
         descricao: description,
         prioridade: priority,
-        status: status
-      })
+        status: status,
+        prazo: deadline
+      }
+
+      console.log(data)
+
+      await taskService.create(data)
 
       toast({
         title: "Tarefa criada",
@@ -50,6 +56,7 @@ const CreateTask = () => {
         description: error.response?.data?.detail || "Não foi possível criar sua tarefa. Tente novamente mais tarde.",
         type: "destructive",
       })
+      console.log(error)
     } finally {
       setLoading(false)
     }
@@ -93,6 +100,20 @@ const CreateTask = () => {
           </div>
 
           <div className={styles.formGroup}>
+            <label htmlFor="deadline" className={styles.label}>
+              Prazo
+            </label>
+            <input
+              id="deadline"
+              type="date"
+              value={deadline}
+              onChange={(e) => setDeadline(e.target.value)}
+              className={styles.input}
+              required
+            />
+          </div>
+
+          <div className={styles.formGroup}>
             <label htmlFor="priority" className={styles.label}>
               Prioridade
             </label>
@@ -103,9 +124,9 @@ const CreateTask = () => {
               className={styles.select}
               required
             >
-              <option value="baixa">Baixa</option>
-              <option value="media">Média</option>
-              <option value="alta">Alta</option>
+              <option value="B">Baixa</option>
+              <option value="M">Média</option>
+              <option value="A">Alta</option>
             </select>
           </div>
 
@@ -120,9 +141,9 @@ const CreateTask = () => {
               className={styles.select}
               required
             >
-              <option value="pendente">Pendente</option>
-              <option value="em_andamento">Em Andamento</option>
-              <option value="concluida">Concluída</option>
+              <option value="P">Pendente</option>
+              <option value="EA">Em Andamento</option>
+              <option value="C">Concluída</option>
             </select>
           </div>
 

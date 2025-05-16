@@ -16,7 +16,7 @@ api.interceptors.response.use(
 
       try {
         // Tenta obter um novo token usando o refreshToken
-        const refreshToken = localStorage.getItem("@TimeCapsule:refresh")
+        const refreshToken = localStorage.getItem("@TaskCollab:refresh")
 
         if (!refreshToken) {
           throw new Error("No refresh token available")
@@ -29,7 +29,7 @@ api.interceptors.response.use(
         const { access } = response.data
 
         // Atualiza o token no localStorage e nos headers
-        localStorage.setItem("@TimeCapsule:token", access)
+        localStorage.setItem("@TaskCollab:token", access)
         api.defaults.headers.common["Authorization"] = `Bearer ${access}`
         originalRequest.headers["Authorization"] = `Bearer ${access}`
 
@@ -37,9 +37,9 @@ api.interceptors.response.use(
         return api(originalRequest)
       } catch (refreshError) {
         // Se falhar ao obter novo token, redireciona para login
-        localStorage.removeItem("@TimeCapsule:token")
-        localStorage.removeItem("@TimeCapsule:refresh")
-        localStorage.removeItem("@TimeCapsule:user")
+        localStorage.removeItem("@TaskCollab:token")
+        localStorage.removeItem("@TaskCollab:refresh")
+        localStorage.removeItem("@TaskCollab:user")
         window.location.href = "/login"
         return Promise.reject(refreshError)
       }
@@ -49,10 +49,10 @@ api.interceptors.response.use(
   },
 )
 
-export const memoryService = {
-  getAll: () => api.get("/memories/"),
-  getById: (id) => api.get(`/memories/${id}/`),
-  create: (data) => api.post("/memories/", data),
-  delete: (id) => api.delete(`/memories/${id}/`),
-  getAllPublics: () => api.get("/memories/publics/")
+export const taskService = {
+  getAll: () => api.get("/tasks/"),
+  getById: (id) => api.get(`/tasks/${id}/`),
+  create: (data) => api.post("/tasks/", data),
+  delete: (id) => api.delete(`/tasks/${id}/`),
+  update: (id, data) => api.put(`/tasks/${id}/`, data)
 }

@@ -1,23 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext";
-import { ToastProvider } from "./components/Toast/ToastContainer";
 import App from "./App";
-import Login from "./pages/Login/Login";
-import Register from "./pages/Register/Register";
-import Dashboard from "./pages/Dashboard/Dashboard";
-import CreateMemory from "./pages/CreateMemory/CreateMemory";
-import MemoryDetail from "./pages/MemoryDetail/MemoryDetail";
-import NotFound from "./pages/NotFound/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
-import MemoriesPublics from "./pages/MemoriesPublics/MemoriesPublics"
+import { ToastProvider } from "./components/Toast/ToastContainer";
+import { AuthProvider } from "./contexts/AuthContext";
+import CreateTask from "./pages/CreateTask/CreateTask";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import Login from "./pages/Login/Login";
+import NotFound from "./pages/NotFound/NotFound";
+import Register from "./pages/Register/Register";
+import TaskDetail from "./pages/TaskDetail/TaskDetail";
 import "./styles/global.scss";
 
 const routes = [
   {
     path: "/",
-    // Envolva o App com AuthProvider e ToastProvider AQUI
     element: (
       <ToastProvider>
         <AuthProvider>
@@ -47,23 +45,15 @@ const routes = [
         path: "/create",
         element: (
           <ProtectedRoute>
-            <CreateMemory />
+            <CreateTask />
           </ProtectedRoute>
         ),
       },
       {
-        path: "/public",
+        path: "/tasks/:id",
         element: (
           <ProtectedRoute>
-            <MemoriesPublics/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path: "/memories/:id",
-        element: (
-          <ProtectedRoute>
-            <MemoryDetail />
+            <TaskDetail />
           </ProtectedRoute>
         ),
       },
