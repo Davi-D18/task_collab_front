@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthContext"
-import { Clock } from "lucide-react"
+import { AlertCircle, Clock } from "lucide-react"
 import styles from "./Register.module.scss"
 
 const Register = () => {
@@ -9,19 +9,37 @@ const Register = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
-  const [error, setError] = useState("")
+  const [errors, setErrors] = useState({})
+  const [generalError, setGeneralError] = useState("")
   const { register, loading } = useAuth()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    // Limpa erros anteriores
+    setErrors({})
+    setGeneralError("")
+
     if (password !== confirmPassword) {
-      setError("As senhas não coincidem")
+      setErrors(prev => ({ ...prev, confirmPassword: "As senhas não coincidem" }))
       return
     }
 
-    setError("")
-    await register(email, password, name)
+    try {
+      await register(email, password, name)
+    } catch (error) {
+      // Os erros já são tratados no contexto de autenticação
+      // Este bloco é apenas para capturar qualquer erro não tratado
+      if (error.response?.data?.errors) {
+        const apiErrors = {};
+        error.response.data.errors.forEach(err => {
+          apiErrors[err.field] = err.message;
+        });
+        setErrors(apiErrors);
+      } else {
+        setGeneralError("Ocorreu um erro ao registrar. Tente novamente mais tarde.");
+      }
+    }
   }
 
   return (
@@ -45,10 +63,16 @@ const Register = () => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className={styles.input}
+              className={`${styles.input} ${errors.username ? styles.inputError : ''}`}
               placeholder="Seu nome"
               required
             />
+            {errors.username && (
+              <div className={styles.fieldError}>
+                <AlertCircle size={14} />
+                <span>{errors.username}</span>
+              </div>
+            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -60,10 +84,16 @@ const Register = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={styles.input}
+              className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
               placeholder="seu@email.com"
               required
             />
+            {errors.email && (
+              <div className={styles.fieldError}>
+                <AlertCircle size={14} />
+                <span>{errors.email}</span>
+              </div>
+            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -75,10 +105,16 @@ const Register = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={styles.input}
+              className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
               placeholder="Sua senha"
               required
             />
+            {errors.password && (
+              <div className={styles.fieldError}>
+                <AlertCircle size={14} />
+                <span>{errors.password}</span>
+              </div>
+            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -90,13 +126,19 @@ const Register = () => {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className={styles.input}
+              className={`${styles.input} ${errors.confirmPassword ? styles.inputError : ''}`}
               placeholder="Confirme sua senha"
               required
             />
+            {errors.confirmPassword && (
+              <div className={styles.fieldError}>
+                <AlertCircle size={14} />
+                <span>{errors.confirmPassword}</span>
+              </div>
+            )}
           </div>
 
-          {error && <p className={styles.errorMessage}>{error}</p>}
+          {generalError && <p className={styles.errorMessage}>{generalError}</p>}
 
           <button type="submit" className={styles.submitButton} disabled={loading}>
             {loading ? "Registrando..." : "Registrar"}

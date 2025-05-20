@@ -1,10 +1,12 @@
 import axios from "axios"
 
+const urlApi = import.meta.env.VITE_API_URL
+
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, 
+  baseURL: urlApi, 
 })
 
-// Interceptor para lidar com tokens expirados
+// Interceptor para lidar com tokens expirados e formatar erros
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -22,7 +24,7 @@ api.interceptors.response.use(
           throw new Error("No refresh token available")
         }
 
-        const response = await axios.post("http://localhost:8000/api/token/refresh/", {
+        const response = await axios.post(`${urlApi}/login/refresh/`, {
           refresh: refreshToken,
         })
 
@@ -43,6 +45,30 @@ api.interceptors.response.use(
         window.location.href = "/login"
         return Promise.reject(refreshError)
       }
+    }
+
+    // Formatar erros da API para um formato padronizado
+    if (error.response?.data?.errors) {
+      // A API já retornou erros no formato esperado
+      return Promise.reject(error)
+    } else if (error.response?.data) {
+      // Converter outros formatos de erro para o formato padronizado
+      const formattedError = {
+        ...error,
+        response: {
+          ...error.response,
+          data: {
+            title: "Erro",
+            errors: [
+              {
+                field: "general",
+                message: error.response.data.detail || error.message || "Ocorreu um erro inesperado"
+              }
+            ]
+          }
+        }
+      }
+      return Promise.reject(formattedError)
     }
 
     return Promise.reject(error)

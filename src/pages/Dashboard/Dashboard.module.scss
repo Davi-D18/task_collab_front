@@ -31,14 +31,55 @@
   }
 }
 
-.memoriesGrid {
+.tasksGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
-.memoryItem {
+.taskItem {
   height: 100%;
+}
+
+.filterContainer {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.filterLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.filterButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filterButton {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background-color: #f3f4f6;
+  }
+  
+  &.active {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
 }
 
 .emptyState {

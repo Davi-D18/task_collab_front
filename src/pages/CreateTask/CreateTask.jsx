@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useToast } from "../../components/Toast/ToastContainer"
 import { taskService } from "../../services/api"
+import { substituirEspacosPorUnderline } from "../../utils/stringUtils"
 import styles from "./CreateTask.module.scss"
 
 const CreateTask = () => {
@@ -32,7 +33,7 @@ const CreateTask = () => {
       const user = JSON.parse(storedData)
 
       const data = {
-        usuario: user.username,
+        usuario: substituirEspacosPorUnderline(user.username),
         titulo: title,
         descricao: description,
         prioridade: priority,

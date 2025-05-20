@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useToast } from "../components/Toast/ToastContainer"
 import { api } from "../services/api"
+import { substituirEspacosPorUnderline } from "../utils/stringUtils"
 
 const AuthContext = createContext({})
 
@@ -11,10 +12,7 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate()
   const { toast } = useToast()
 
-  function substituirEspacosPorUnderline(nomeUsuario) {
-    // Remove espaços duplos, tabs e qualquer tipo de espaço, substituindo por um único _
-    return nomeUsuario.replace(/\s+/g, '_').trim();
-  }
+  // A função substituirEspacosPorUnderline foi movida para utils/stringUtils.js
 
   useEffect(() => {
     const token = localStorage.getItem("@TaskCollab:token")
@@ -46,8 +44,15 @@ export const AuthProvider = ({ children }) => {
   const login = async (credential, password) => {
     try {
       setLoading(true)
+      
+      // Verifica se é email usando regex simples
+      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(credential);
+      
+      // Se não for email, trata como username e remove espaços
+      const processedCredential = isEmail ? credential : substituirEspacosPorUnderline(credential);
+      
       const response = await api.post("/accounts/login/", {
-        credential: credential,
+        credential: processedCredential,
         password: password,
       })
 
@@ -79,11 +84,26 @@ export const AuthProvider = ({ children }) => {
 
       navigate("/")
     } catch (error) {
-      toast({
-        title: "Erro ao fazer login",
-        description: error.response?.data?.detail || "Credenciais inválidas",
-        type: "destructive",
-      })
+      console.log("Erro de login:", error.response?.data)
+      
+      // Verifica se há erros específicos de campo retornados pela API
+      if (error.response?.data?.errors) {
+        const errors = error.response.data.errors;
+        // Exibe apenas o primeiro erro para não sobrecarregar o usuário
+        const firstError = errors[0];
+        
+        toast({
+          title: error.response.data.title || "Erro ao fazer login",
+          description: `${firstError.field}: ${firstError.message}`,
+          type: "destructive",
+        })
+      } else {
+        toast({
+          title: "Erro ao fazer login",
+          description: error.response?.data?.detail || "Credenciais inválidas",
+          type: "destructive",
+        })
+      }
       console.log(error)
     } finally {
       setLoading(false)
@@ -109,11 +129,26 @@ export const AuthProvider = ({ children }) => {
 
       navigate("/login")
     } catch (error) {
-      toast({
-        title: "Erro ao registrar",
-        description: error.response?.data.username || error.response?.data.email || "Não foi possível criar sua conta",
-        type: "destructive",
-      })
+      console.log("Erro de registro:", error.response?.data)
+      
+      // Verifica se há erros específicos de campo retornados pela API
+      if (error.response?.data?.errors) {
+        const errors = error.response.data.errors;
+        // Exibe apenas o primeiro erro para não sobrecarregar o usuário
+        const firstError = errors[0];
+        
+        toast({
+          title: error.response.data.title || "Erro ao registrar",
+          description: `${firstError.field}: ${firstError.message}`,
+          type: "destructive",
+        })
+      } else {
+        toast({
+          title: "Erro ao registrar",
+          description: error.response?.data.username || error.response?.data.email || "Não foi possível criar sua conta",
+          type: "destructive",
+        })
+      }
       console.log(error)
     } finally {
       setLoading(false)
