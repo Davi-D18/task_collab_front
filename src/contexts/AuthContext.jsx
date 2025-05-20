@@ -12,8 +12,6 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate()
   const { toast } = useToast()
 
-  // A função substituirEspacosPorUnderline foi movida para utils/stringUtils.js
-
   useEffect(() => {
     const token = localStorage.getItem("@TaskCollab:token")
     const storedUser = localStorage.getItem("@TaskCollab:user")
@@ -36,7 +34,6 @@ export const AuthProvider = ({ children }) => {
 
       return JSON.parse(jsonPayload);
     } catch (error) {
-      console.error('Erro ao decodificar token:', error);
       return null;
     }
   };
@@ -84,8 +81,6 @@ export const AuthProvider = ({ children }) => {
 
       navigate("/")
     } catch (error) {
-      console.log("Erro de login:", error.response?.data)
-      
       // Verifica se há erros específicos de campo retornados pela API
       if (error.response?.data?.errors) {
         const errors = error.response.data.errors;
@@ -93,8 +88,8 @@ export const AuthProvider = ({ children }) => {
         const firstError = errors[0];
         
         toast({
-          title: error.response.data.title || "Erro ao fazer login",
-          description: `${firstError.field}: ${firstError.message}`,
+          title: "Erro ao fazer login",
+          description: `${firstError.message}`,
           type: "destructive",
         })
       } else {
