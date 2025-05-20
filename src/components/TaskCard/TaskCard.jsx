@@ -23,30 +23,49 @@ const TaskCard = ({ task, onDelete }) => {
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case "alta":
+      case "Alta":
         return "#ef4444"
-      case "media":
+      case "Media":
         return "#f59e0b"
-      case "baixa":
+      case "Baixa":
         return "#10b981"
       default:
         return "#6b7280"
     }
   }
 
-  const getStatusIcon = (status) => {
+  const getStatusInfo = (status) => {
     switch (status) {
-      case "concluida":
-        return <CheckCircle2 size={16} color="#10b981" />
-      case "em_andamento":
-        return <AlertCircle size={16} color="#f59e0b" />
+      case "Concluída":
+        return {
+          icon: <CheckCircle2 size={16} color="#10b981" />,
+          label: "Concluída",
+          color: "#10b981"
+        }
+      case "Em Andamento":
+        return {
+          icon: <AlertCircle size={16} color="#f59e0b" />,
+          label: "Em andamento",
+          color: "#f59e0b"
+        }
       default:
-        return <Clock size={16} color="#6b7280" />
+        return {
+          icon: <Clock size={16} color="#6b7280" />,
+          label: "Pendente",
+          color: "#6b7280"
+        }
     }
   }
 
+  const statusInfo = getStatusInfo(task.status_display)
+
+  const isCompleted = task.status_display === "Concluída"
+
   return (
-    <Link to={`/tasks/${task.id}`} className={styles.card}>
+    <Link 
+      to={`/tasks/${task.id}`} 
+      className={`${styles.card} ${isCompleted ? styles.completed : ''}`}
+    >
       <div className={styles.header}>
         <h3 className={styles.title}>{task.titulo}</h3>
         <button onClick={handleDelete} className={styles.deleteButton} disabled={isDeleting}>
@@ -64,12 +83,12 @@ const TaskCard = ({ task, onDelete }) => {
           <span>Criada em {formatDate(task.criado_em)}</span>
         </div>
         <div className={styles.metadata}>
-          <span className={styles.priority} style={{ color: getPriorityColor(task.prioridade) }}>
+          <span className={styles.priority} style={{ color: getPriorityColor(task.prioridade_display) }}>
             {task.prioridade}
           </span>
-          <span className={styles.status}>
-            {getStatusIcon(task.status)}
-            {task.status}
+          <span className={styles.status} style={{ color: statusInfo.color }}>
+            {statusInfo.icon}
+            {statusInfo.label}
           </span>
         </div>
       </div>
@@ -77,4 +96,4 @@ const TaskCard = ({ task, onDelete }) => {
   )
 }
 
-export default TaskCard 
+export default TaskCard
