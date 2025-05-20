@@ -1,4 +1,4 @@
-import { CheckCircle2, Clock, Filter, Plus } from "lucide-react"
+import { Clock, Filter, Plus } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
@@ -46,11 +46,8 @@ const Dashboard = () => {
     try {
       setLoading(true)
       const response = await taskService.getAll()
-      console.log('Tarefas recebidas:', response.data)
       setTasks(response.data)
     } catch (error) {
-      console.error('Erro ao buscar tarefas:', error)
-      
       // Verifica se há erros específicos retornados pela API
       if (error.response?.data?.errors) {
         const errors = error.response.data.errors;

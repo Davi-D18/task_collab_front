@@ -52,7 +52,6 @@ const TaskDetail = () => {
       setEditedTitle(taskData.titulo)
       setEditedDescription(taskData.descricao)
     } catch (error) {
-      console.error('Erro ao buscar task:', error)
       toast({
         title: "Erro ao carregar tarefa",
         description: "Não foi possível carregar a tarefa. Tente novamente mais tarde.",
@@ -93,7 +92,7 @@ const TaskDetail = () => {
 
       // Cria uma cópia completa da tarefa atual
       const updatedTask = {
-        titulo: field === "titulo" ? substituirEspacosPorUnderline(value) : task.titulo,
+        titulo: field === "titulo" ? value : task.titulo,
         descricao: field === "descricao" ? value : task.descricao,
         prazo: field === "prazo" ? value : task.prazo,
         status: field === "status" ? value : statusMap[task.status_display] || "P",
@@ -101,7 +100,7 @@ const TaskDetail = () => {
         usuario: substituirEspacosPorUnderline(user.username)
       }
 
-      const response = await taskService.update(id, updatedTask)
+      await taskService.update(id, updatedTask)
       
       // Atualiza o estado local com a nova resposta do backend
       await fetchTask()
@@ -149,7 +148,6 @@ const TaskDetail = () => {
   }
 
   const getStatusIcon = (status) => {
-    console.log("Status para ícone:", status);
     switch (status) {
       case "C":
       case "concluida":
