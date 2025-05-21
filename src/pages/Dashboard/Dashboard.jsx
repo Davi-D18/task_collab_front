@@ -11,7 +11,8 @@ const Dashboard = () => {
   const [tasks, setTasks] = useState([])
   const [filteredTasks, setFilteredTasks] = useState([])
   const [loading, setLoading] = useState(true)
-  const [activeFilter, setActiveFilter] = useState("all")
+  const [activeStatusFilter, setActiveStatusFilter] = useState("all")
+  const [activePriorityFilter, setActivePriorityFilter] = useState("all")
   const { toast } = useToast()
 
   useEffect(() => {
@@ -20,26 +21,46 @@ const Dashboard = () => {
   
   useEffect(() => {
     if (tasks.length > 0) {
-      filterTasks(activeFilter)
+      applyFilters()
     } else {
       setFilteredTasks([])
     }
-  }, [tasks, activeFilter])
+  }, [tasks, activeStatusFilter, activePriorityFilter])
   
-  const filterTasks = (filter) => {
-    switch (filter) {
-      case "pending":
-        setFilteredTasks(tasks.filter(task => task.status_display === "Pendente"))
-        break
-      case "inProgress":
-        setFilteredTasks(tasks.filter(task => task.status_display === "Em Andamento"))
-        break
-      case "completed":
-        setFilteredTasks(tasks.filter(task => task.status_display === "Concluída"))
-        break
-      default:
-        setFilteredTasks(tasks)
+  const applyFilters = () => {
+    let filtered = [...tasks]
+    
+    // Aplicar filtro de status
+    if (activeStatusFilter !== "all") {
+      switch (activeStatusFilter) {
+        case "pending":
+          filtered = filtered.filter(task => task.status_display === "Pendente")
+          break
+        case "inProgress":
+          filtered = filtered.filter(task => task.status_display === "Em Andamento")
+          break
+        case "completed":
+          filtered = filtered.filter(task => task.status_display === "Concluída")
+          break
+      }
     }
+    
+    // Aplicar filtro de prioridade
+    if (activePriorityFilter !== "all") {
+      switch (activePriorityFilter) {
+        case "high":
+          filtered = filtered.filter(task => task.prioridade_display === "Alta")
+          break
+        case "medium":
+          filtered = filtered.filter(task => task.prioridade_display === "Media")
+          break
+        case "low":
+          filtered = filtered.filter(task => task.prioridade_display === "Baixa")
+          break
+      }
+    }
+    
+    setFilteredTasks(filtered)
   }
 
   const fetchTasks = async () => {
@@ -110,35 +131,70 @@ const Dashboard = () => {
       </div>
 
       <div className={styles.filterContainer}>
-        <div className={styles.filterLabel}>
-          <Filter size={16} />
-          <span>Filtrar por:</span>
+        <div className={styles.filterSection}>
+          <div className={styles.filterLabel}>
+            <Filter size={16} />
+            <span>Filtrar por Status:</span>
+          </div>
+          <div className={styles.filterButtons}>
+            <button 
+              className={`${styles.filterButton} ${activeStatusFilter === 'all' ? styles.active : ''}`}
+              onClick={() => setActiveStatusFilter('all')}
+            >
+              Todos
+            </button>
+            <button 
+              className={`${styles.filterButton} ${activeStatusFilter === 'pending' ? styles.active : ''}`}
+              onClick={() => setActiveStatusFilter('pending')}
+            >
+              Pendentes
+            </button>
+            <button 
+              className={`${styles.filterButton} ${activeStatusFilter === 'inProgress' ? styles.active : ''}`}
+              onClick={() => setActiveStatusFilter('inProgress')}
+            >
+              Em Andamento
+            </button>
+            <button 
+              className={`${styles.filterButton} ${activeStatusFilter === 'completed' ? styles.active : ''}`}
+              onClick={() => setActiveStatusFilter('completed')}
+            >
+              Concluídas
+            </button>
+          </div>
         </div>
-        <div className={styles.filterButtons}>
-          <button 
-            className={`${styles.filterButton} ${activeFilter === 'all' ? styles.active : ''}`}
-            onClick={() => setActiveFilter('all')}
-          >
-            Todas
-          </button>
-          <button 
-            className={`${styles.filterButton} ${activeFilter === 'pending' ? styles.active : ''}`}
-            onClick={() => setActiveFilter('pending')}
-          >
-            Pendentes
-          </button>
-          <button 
-            className={`${styles.filterButton} ${activeFilter === 'inProgress' ? styles.active : ''}`}
-            onClick={() => setActiveFilter('inProgress')}
-          >
-            Em Andamento
-          </button>
-          <button 
-            className={`${styles.filterButton} ${activeFilter === 'completed' ? styles.active : ''}`}
-            onClick={() => setActiveFilter('completed')}
-          >
-            Concluídas
-          </button>
+        
+        <div className={styles.filterSection}>
+          <div className={styles.filterLabel}>
+            <Filter size={16} />
+            <span>Filtrar por Prioridade:</span>
+          </div>
+          <div className={styles.filterButtons}>
+            <button 
+              className={`${styles.filterButton} ${activePriorityFilter === 'all' ? styles.active : ''}`}
+              onClick={() => setActivePriorityFilter('all')}
+            >
+              Todas
+            </button>
+            <button 
+              className={`${styles.filterButton} ${activePriorityFilter === 'high' ? styles.active : ''}`}
+              onClick={() => setActivePriorityFilter('high')}
+            >
+              Alta
+            </button>
+            <button 
+              className={`${styles.filterButton} ${activePriorityFilter === 'medium' ? styles.active : ''}`}
+              onClick={() => setActivePriorityFilter('medium')}
+            >
+              Média
+            </button>
+            <button 
+              className={`${styles.filterButton} ${activePriorityFilter === 'low' ? styles.active : ''}`}
+              onClick={() => setActivePriorityFilter('low')}
+            >
+              Baixa
+            </button>
+          </div>
         </div>
       </div>
       
