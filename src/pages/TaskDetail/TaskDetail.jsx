@@ -137,13 +137,13 @@ const TaskDetail = () => {
   const getPriorityColor = (priority) => {
     switch (priority) {
       case "Alta":
-        return "#ef4444"
+        return { color: "#ef4444", fontWeight: "bold", borderBottom: "2px solid #ef4444" }
       case "Media":
-        return "#f59e0b"
+        return { color: "#f59e0b", fontWeight: "bold", borderBottom: "2px solid #f59e0b" }
       case "Baixa":
-        return "#10b981"
+        return { color: "#10b981", fontWeight: "bold", borderBottom: "2px solid #10b981" }
       default:
-        return "#6b7280"
+        return { color: "#6b7280", fontWeight: "normal" }
     }
   }
 
@@ -252,7 +252,7 @@ const TaskDetail = () => {
                   value={prioridadeMap[task.prioridade_display] || "B"}
                   onChange={(e) => handleUpdateTask("prioridade", e.target.value)}
                   className={styles.select}
-                  style={{ color: getPriorityColor(task.prioridade_display) }}
+                  style={getPriorityColor(task.prioridade_display)}
                   disabled={updating}
                 >
                   <option value="B">Baixa</option>
