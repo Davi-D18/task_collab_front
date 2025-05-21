@@ -6,6 +6,7 @@
   padding: 1.5rem;
   transition: all 0.2s ease;
   height: 100%;
+  min-width: 300px;
   
   &:hover {
     transform: translateY(-4px);
@@ -74,23 +75,31 @@
   align-items: center;
   font-size: 0.875rem;
   color: #6b7280;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .date {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  white-space: nowrap;
+  min-width: fit-content;
 }
 
 .metadata {
   display: flex;
-  gap: 1rem;
+  gap: 1.25rem;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .priority {
   font-weight: 500;
   text-transform: capitalize;
+  padding-bottom: 1px;
+  white-space: nowrap;
+  min-width: fit-content;
 }
 
 .status {
@@ -98,4 +107,6 @@
   align-items: center;
   gap: 0.25rem;
   text-transform: capitalize;
+  white-space: nowrap;
+  min-width: fit-content;
 }

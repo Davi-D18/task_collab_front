@@ -24,13 +24,13 @@ const TaskCard = ({ task, onDelete }) => {
   const getPriorityColor = (priority) => {
     switch (priority) {
       case "Alta":
-        return "#ef4444"
+        return { color: "#ef4444", fontWeight: "bold", borderBottom: "2px solid #ef4444" }
       case "Media":
-        return "#f59e0b"
+        return { color: "#f59e0b", fontWeight: "bold", borderBottom: "2px solid #f59e0b" }
       case "Baixa":
-        return "#10b981"
+        return { color: "#10b981", fontWeight: "bold", borderBottom: "2px solid #10b981" }
       default:
-        return "#6b7280"
+        return { color: "#6b7280", fontWeight: "normal" }
     }
   }
 
@@ -38,21 +38,51 @@ const TaskCard = ({ task, onDelete }) => {
     switch (status) {
       case "Concluída":
         return {
-          icon: <CheckCircle2 size={16} color="#10b981" />,
+          icon: <CheckCircle2 size={16} color="#ffffff" />,
           label: "Concluída",
-          color: "#10b981"
+          style: { 
+            color: "#ffffff", 
+            backgroundColor: "#10b981", 
+            padding: "2px 8px", 
+            borderRadius: "4px",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+            fontWeight: "bold",
+            whiteSpace: "nowrap"
+          }
         }
       case "Em Andamento":
         return {
-          icon: <AlertCircle size={16} color="#f59e0b" />,
-          label: "Em andamento",
-          color: "#f59e0b"
+          icon: <AlertCircle size={16} color="#ffffff" />,
+          label: "Em Andamento",
+          style: { 
+            color: "#ffffff", 
+            backgroundColor: "#f59e0b", 
+            padding: "2px 8px", 
+            borderRadius: "4px",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+            fontWeight: "bold",
+            whiteSpace: "nowrap"
+          }
         }
       default:
         return {
-          icon: <Clock size={16} color="#6b7280" />,
+          icon: <Clock size={16} color="#ffffff" />,
           label: "Pendente",
-          color: "#6b7280"
+          style: { 
+            color: "#ffffff", 
+            backgroundColor: "#6b7280", 
+            padding: "2px 8px", 
+            borderRadius: "4px",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+            fontWeight: "bold",
+            whiteSpace: "nowrap"
+          }
         }
     }
   }
@@ -83,10 +113,10 @@ const TaskCard = ({ task, onDelete }) => {
           <span>Criada em {formatDate(task.criado_em)}</span>
         </div>
         <div className={styles.metadata}>
-          <span className={styles.priority} style={{ color: getPriorityColor(task.prioridade_display) }}>
-            {task.prioridade}
+          <span className={styles.priority} style={getPriorityColor(task.prioridade_display)}>
+            {task.prioridade_display || "Normal"}
           </span>
-          <span className={styles.status} style={{ color: statusInfo.color }}>
+          <span className={styles.status} style={statusInfo.style}>
             {statusInfo.icon}
             {statusInfo.label}
           </span>
