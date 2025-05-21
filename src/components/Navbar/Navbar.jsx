@@ -1,4 +1,4 @@
-import { Clock, LogOut, Menu, User, X } from "lucide-react"
+import { CircleCheckBig, LogOut, Menu, User, X } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthContext"
@@ -16,7 +16,7 @@ const Navbar = () => {
     <nav className={styles.navbar}>
       <div className={styles.container}>
         <Link to="/" className={styles.logo}>
-          <Clock className={styles.logoIcon} />
+          <CircleCheckBig className={styles.logoIcon} />
           <span>TaskCollab</span>
         </Link>
 

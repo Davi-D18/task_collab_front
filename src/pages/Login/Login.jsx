@@ -1,4 +1,4 @@
-import { Clock } from "lucide-react"
+import { CircleCheckBig } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthContext"
@@ -20,7 +20,7 @@ const Login = () => {
     <div className={styles.loginContainer}>
       <div className={styles.loginCard}>
         <div className={styles.logoContainer}>
-          <Clock size={40} className={styles.logoIcon} />
+          <CircleCheckBig size={40} className={styles.logoIcon} />
           <h1 className={styles.logoText}>TaskCollab</h1>
         </div>
 
