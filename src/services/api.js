@@ -14,36 +14,43 @@ api.interceptors.response.use(
 
     // Se o erro for 401 (Unauthorized) e não for uma tentativa de refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true
+      // Verifica se é o erro específico de token inválido
+      const isTokenInvalid = error.response?.data?.errors?.some(
+        err => err.field === "general" && err.message.includes("token informado não é válido")
+      );
+      
+      if (isTokenInvalid || !originalRequest.url.includes("login/refresh")) {
+        originalRequest._retry = true;
 
-      try {
-        // Tenta obter um novo token usando o refreshToken
-        const refreshToken = localStorage.getItem("@TaskCollab:refresh")
+        try {
+          // Tenta obter um novo token usando o refreshToken
+          const refreshToken = localStorage.getItem("@TaskCollab:refresh");
 
-        if (!refreshToken) {
-          throw new Error("No refresh token available")
+          if (!refreshToken) {
+            throw new Error("No refresh token available");
+          }
+
+          const response = await axios.post(`${urlApi}/accounts/login/refresh/`, {
+            refresh: refreshToken,
+          });
+
+          const { access } = response.data;
+
+          // Atualiza o token no localStorage e nos headers
+          localStorage.setItem("@TaskCollab:token", access);
+          api.defaults.headers.common["Authorization"] = `Bearer ${access}`;
+          originalRequest.headers["Authorization"] = `Bearer ${access}`;
+
+          // Refaz a requisição original com o novo token
+          return api(originalRequest);
+        } catch (refreshError) {
+          // Se falhar ao obter novo token, redireciona para login
+          localStorage.removeItem("@TaskCollab:token");
+          localStorage.removeItem("@TaskCollab:refresh");
+          localStorage.removeItem("@TaskCollab:user");
+          window.location.href = "/login";
+          return Promise.reject(refreshError);
         }
-
-        const response = await axios.post(`${urlApi}/accounts/login/refresh/`, {
-          refresh: refreshToken,
-        })
-
-        const { access } = response.data
-
-        // Atualiza o token no localStorage e nos headers
-        localStorage.setItem("@TaskCollab:token", access)
-        api.defaults.headers.common["Authorization"] = `Bearer ${access}`
-        originalRequest.headers["Authorization"] = `Bearer ${access}`
-
-        // Refaz a requisição original com o novo token
-        return api(originalRequest)
-      } catch (refreshError) {
-        // Se falhar ao obter novo token, redireciona para login
-        localStorage.removeItem("@TaskCollab:token")
-        localStorage.removeItem("@TaskCollab:refresh")
-        localStorage.removeItem("@TaskCollab:user")
-        window.location.href = "/login"
-        return Promise.reject(refreshError)
       }
     }
 

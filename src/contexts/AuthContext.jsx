@@ -99,7 +99,6 @@ export const AuthProvider = ({ children }) => {
           type: "destructive",
         })
       }
-      console.log(error)
     } finally {
       setLoading(false)
     }
@@ -124,8 +123,6 @@ export const AuthProvider = ({ children }) => {
 
       navigate("/login")
     } catch (error) {
-      console.log("Erro de registro:", error.response?.data)
-      
       // Verifica se há erros específicos de campo retornados pela API
       if (error.response?.data?.errors) {
         const errors = error.response.data.errors;
@@ -167,7 +164,7 @@ export const AuthProvider = ({ children }) => {
         throw new Error("No refresh token available")
       }
 
-      const response = await api.post("/api/token/refresh/", {
+      const response = await api.post(`/accounts/login/refresh/`, {
         refresh,
       })
 
