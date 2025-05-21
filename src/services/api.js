@@ -24,7 +24,7 @@ api.interceptors.response.use(
           throw new Error("No refresh token available")
         }
 
-        const response = await axios.post(`${urlApi}/login/refresh/`, {
+        const response = await axios.post(`${urlApi}/accounts/login/refresh/`, {
           refresh: refreshToken,
         })
 

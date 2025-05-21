@@ -1,0 +1,74 @@
+.baseButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 0.375rem;
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.backButton {
+  composes: baseButton;
+  background: none;
+  color: #6b7280;
+  font-size: 1rem;
+  padding: 0.5rem;
+
+  &:hover {
+    background-color: #f3f4f6;
+    color: #374151;
+  }
+}
+
+.deleteButton {
+  composes: baseButton;
+  background-color: #fee2e2;
+  color: #ef4444;
+  padding: 0.5rem 1rem;
+
+  &:hover:not(:disabled) {
+    background-color: #fecaca;
+  }
+}
+
+.editButton {
+  composes: baseButton;
+  background: none;
+  color: #3b82f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  
+  &:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+}
+
+.saveButton {
+  composes: baseButton;
+  background-color: #10b981;
+  color: white;
+  padding: 0.5rem 1rem;
+  
+  &:hover:not(:disabled) {
+    background-color: #059669;
+  }
+}
+
+.createButton {
+  composes: baseButton;
+  background-color: var(--primary);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  
+  &:hover {
+    background-color: var(--primary-dark);
+  }
+}

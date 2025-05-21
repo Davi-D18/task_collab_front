@@ -5,6 +5,8 @@ import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
 import TaskCard from "../../components/TaskCard/TaskCard"
 import { useToast } from "../../components/Toast/ToastContainer"
 import { taskService } from "../../services/api"
+import FilterGroup from "../../components/Filters/FilterGroup"
+import FilterButton from "../../components/Filters/FilterButton"
 import styles from "./Dashboard.module.scss"
 
 const Dashboard = () => {
@@ -131,71 +133,57 @@ const Dashboard = () => {
       </div>
 
       <div className={styles.filterContainer}>
-        <div className={styles.filterSection}>
-          <div className={styles.filterLabel}>
-            <Filter size={16} />
-            <span>Filtrar por Status:</span>
-          </div>
-          <div className={styles.filterButtons}>
-            <button 
-              className={`${styles.filterButton} ${activeStatusFilter === 'all' ? styles.active : ''}`}
-              onClick={() => setActiveStatusFilter('all')}
-            >
-              Todos
-            </button>
-            <button 
-              className={`${styles.filterButton} ${activeStatusFilter === 'pending' ? styles.active : ''}`}
-              onClick={() => setActiveStatusFilter('pending')}
-            >
-              Pendentes
-            </button>
-            <button 
-              className={`${styles.filterButton} ${activeStatusFilter === 'inProgress' ? styles.active : ''}`}
-              onClick={() => setActiveStatusFilter('inProgress')}
-            >
-              Em Andamento
-            </button>
-            <button 
-              className={`${styles.filterButton} ${activeStatusFilter === 'completed' ? styles.active : ''}`}
-              onClick={() => setActiveStatusFilter('completed')}
-            >
-              Concluídas
-            </button>
-          </div>
-        </div>
+        <FilterGroup 
+          label="Filtrar por Status:" 
+          icon={<Filter size={16} />}
+        >
+          <FilterButton 
+            label="Todos" 
+            active={activeStatusFilter === 'all'} 
+            onClick={() => setActiveStatusFilter('all')} 
+          />
+          <FilterButton 
+            label="Pendentes" 
+            active={activeStatusFilter === 'pending'} 
+            onClick={() => setActiveStatusFilter('pending')} 
+          />
+          <FilterButton 
+            label="Em Andamento" 
+            active={activeStatusFilter === 'inProgress'} 
+            onClick={() => setActiveStatusFilter('inProgress')} 
+          />
+          <FilterButton 
+            label="Concluídas" 
+            active={activeStatusFilter === 'completed'} 
+            onClick={() => setActiveStatusFilter('completed')} 
+          />
+        </FilterGroup>
         
-        <div className={styles.filterSection}>
-          <div className={styles.filterLabel}>
-            <Filter size={16} />
-            <span>Filtrar por Prioridade:</span>
-          </div>
-          <div className={styles.filterButtons}>
-            <button 
-              className={`${styles.filterButton} ${activePriorityFilter === 'all' ? styles.active : ''}`}
-              onClick={() => setActivePriorityFilter('all')}
-            >
-              Todas
-            </button>
-            <button 
-              className={`${styles.filterButton} ${activePriorityFilter === 'high' ? styles.active : ''}`}
-              onClick={() => setActivePriorityFilter('high')}
-            >
-              Alta
-            </button>
-            <button 
-              className={`${styles.filterButton} ${activePriorityFilter === 'medium' ? styles.active : ''}`}
-              onClick={() => setActivePriorityFilter('medium')}
-            >
-              Média
-            </button>
-            <button 
-              className={`${styles.filterButton} ${activePriorityFilter === 'low' ? styles.active : ''}`}
-              onClick={() => setActivePriorityFilter('low')}
-            >
-              Baixa
-            </button>
-          </div>
-        </div>
+        <FilterGroup 
+          label="Filtrar por Prioridade:" 
+          icon={<Filter size={16} />}
+        >
+          <FilterButton 
+            label="Todas" 
+            active={activePriorityFilter === 'all'} 
+            onClick={() => setActivePriorityFilter('all')} 
+          />
+          <FilterButton 
+            label="Alta" 
+            active={activePriorityFilter === 'high'} 
+            onClick={() => setActivePriorityFilter('high')} 
+          />
+          <FilterButton 
+            label="Média" 
+            active={activePriorityFilter === 'medium'} 
+            onClick={() => setActivePriorityFilter('medium')} 
+          />
+          <FilterButton 
+            label="Baixa" 
+            active={activePriorityFilter === 'low'} 
+            onClick={() => setActivePriorityFilter('low')} 
+          />
+        </FilterGroup>
       </div>
       
       {loading ? (

@@ -3,6 +3,11 @@ import { useNavigate } from "react-router-dom"
 import { useToast } from "../../components/Toast/ToastContainer"
 import { taskService } from "../../services/api"
 import { substituirEspacosPorUnderline } from "../../utils/stringUtils"
+import Button from "../../components/UI/Button"
+import Card from "../../components/UI/Card"
+import SelectField from "../../components/FormControls/SelectField"
+import DateField from "../../components/FormControls/DateField"
+import TextareaField from "../../components/FormControls/TextareaField"
 import styles from "./CreateTask.module.scss"
 
 const CreateTask = () => {
@@ -18,7 +23,7 @@ const CreateTask = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!title || !description || !deadline) {
+    if (!title || !deadline) {
       toast({
         title: "Campos obrigatórios",
         description: "Por favor, preencha todos os campos.",
@@ -41,8 +46,6 @@ const CreateTask = () => {
         prazo: deadline
       }
 
-      console.log(data)
-
       await taskService.create(data)
 
       toast({
@@ -52,12 +55,25 @@ const CreateTask = () => {
 
       navigate("/")
     } catch (error) {
-      toast({
-        title: "Erro ao criar tarefa",
-        description: error.response?.data?.detail || "Não foi possível criar sua tarefa. Tente novamente mais tarde.",
-        type: "destructive",
-      })
-      console.log(error)
+      console.error("Erro ao criar tarefa:", error.response?.data);
+      
+      // Verifica se há erros específicos de campo retornados pela API
+      if (error.response?.data?.errors) {
+        const errors = error.response.data.errors;
+        const errorMessages = errors.map(err => `${err.field}: ${err.message}`).join(', ');
+        
+        toast({
+          title: error.response.data.title || "Erro ao criar tarefa",
+          description: errorMessages || "Não foi possível criar sua tarefa. Tente novamente mais tarde.",
+          type: "destructive",
+        });
+      } else {
+        toast({
+          title: "Erro ao criar tarefa",
+          description: error.response?.data?.detail || "Não foi possível criar sua tarefa. Tente novamente mais tarde.",
+          type: "destructive",
+        });
+      }
     } finally {
       setLoading(false)
     }
@@ -65,14 +81,17 @@ const CreateTask = () => {
 
   return (
     <div className={styles.createTask}>
-      <h1 className={styles.title}>Criar Nova Tarefa</h1>
-      <p className={styles.subtitle}>Crie uma nova tarefa para o TaskCollab Solutions.</p>
+      <Card>
+        <Card.Header>
+          <Card.Title>Criar Nova Tarefa</Card.Title>
+        </Card.Header>
+        
+        <p className={styles.subtitle}>Crie uma nova tarefa.</p>
 
-      <div className={styles.formCard}>
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
             <label htmlFor="title" className={styles.label}>
-              Título
+              Título <span className={styles.requiredField}>*</span>
             </label>
             <input
               id="title"
@@ -89,75 +108,69 @@ const CreateTask = () => {
             <label htmlFor="description" className={styles.label}>
               Descrição
             </label>
-            <textarea
+            <TextareaField
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className={styles.textarea}
-              placeholder="Descreva sua tarefa aqui..."
-              rows={8}
-              required
+              disabled={loading}
             />
           </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="deadline" className={styles.label}>
-              Prazo
-            </label>
-            <input
+          <div className={styles.controlsRow}>
+            <DateField
               id="deadline"
-              type="date"
+              label={<>Prazo <span className={styles.requiredField}>*</span></>}
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
-              className={styles.input}
-              required
+              disabled={loading}
             />
-          </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="priority" className={styles.label}>
-              Prioridade
-            </label>
-            <select
+            <SelectField
               id="priority"
+              label="Prioridade"
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
-              className={styles.select}
-              required
-            >
-              <option value="B">Baixa</option>
-              <option value="M">Média</option>
-              <option value="A">Alta</option>
-            </select>
-          </div>
+              disabled={loading}
+              options={[
+                { value: "B", label: "Baixa" },
+                { value: "M", label: "Média" },
+                { value: "A", label: "Alta" }
+              ]}
+            />
 
-          <div className={styles.formGroup}>
-            <label htmlFor="status" className={styles.label}>
-              Status
-            </label>
-            <select
+            <SelectField
               id="status"
+              label="Status"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className={styles.select}
-              required
-            >
-              <option value="P">Pendente</option>
-              <option value="EA">Em Andamento</option>
-              <option value="C">Concluída</option>
-            </select>
+              disabled={loading}
+              options={[
+                { value: "P", label: "Pendente" },
+                { value: "EA", label: "Em Andamento" },
+                { value: "C", label: "Concluída" }
+              ]}
+            />
           </div>
 
           <div className={styles.actions}>
-            <button type="button" onClick={() => navigate("/")} className={styles.cancelButton} disabled={loading}>
+            <Button 
+              variant="back" 
+              onClick={() => navigate("/")} 
+              disabled={loading}
+              type="button"
+            >
               Cancelar
-            </button>
-            <button type="submit" className={styles.submitButton} disabled={loading}>
+            </Button>
+            <Button 
+              variant="create" 
+              disabled={loading}
+              type="submit"
+            >
               {loading ? "Criando..." : "Criar Tarefa"}
-            </button>
+            </Button>
           </div>
         </form>
-      </div>
+      </Card>
     </div>
   )
 }
