@@ -73,7 +73,7 @@ const TaskCard = ({ task, onDelete }) => {
         </button>
       </div>
       <p className={styles.description}>
-        {task.descricao.length > 150
+        {task.descricao.length > 50
           ? `${task.descricao.substring(0, 150)}...`
           : task.descricao}
       </p>
