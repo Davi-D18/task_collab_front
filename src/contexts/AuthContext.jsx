@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useRef, useState } from "react"
+import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import { useToast } from "../components/Toast/ToastContainer"
 import { api } from "../services/api"
@@ -11,7 +12,53 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
   const { toast } = useToast()
+  
+  // Criando a referência sem dependência inicial
+  const refreshTokenRef = useRef(null);
+  
+  // Função para fazer logout
+  const logout = () => {
+    localStorage.removeItem("@TaskCollab:token")
+    localStorage.removeItem("@TaskCollab:refresh")
+    localStorage.removeItem("@TaskCollab:user")
+    delete api.defaults.headers.common["Authorization"]
+    setUser(null)
+    navigate("/login")
+  }
+  
+  // Definindo refreshToken
+  const refreshToken = async (originalRequest = null) => {
+    try {
+      const refresh = localStorage.getItem("@TaskCollab:refresh")
 
+      if (!refresh) {
+        throw new Error("No refresh token available")
+      }
+
+      // Usando axios diretamente para evitar loop com o interceptor
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}accounts/login/refresh/`, {
+        refresh,
+      })
+
+      const { access } = response.data
+      localStorage.setItem("@TaskCollab:token", access)
+      api.defaults.headers.common["Authorization"] = `Bearer ${access}`
+      
+      // Se houver uma requisição original, atualiza o header dela também
+      if (originalRequest) {
+        originalRequest.headers["Authorization"] = `Bearer ${access}`
+      }
+
+      return access
+    } catch (error) {
+      logout()
+      throw error
+    }
+  }
+  
+  // Atualiza a referência com a função refreshToken
+  refreshTokenRef.current = refreshToken;
+  
   useEffect(() => {
     const token = localStorage.getItem("@TaskCollab:token")
     const storedUser = localStorage.getItem("@TaskCollab:user")
@@ -20,6 +67,11 @@ export const AuthProvider = ({ children }) => {
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`
       setUser(JSON.parse(storedUser))
     }
+
+    // Configura a função refreshToken no interceptor
+    import("../services/api").then(({ setAuthRefreshToken }) => {
+      setAuthRefreshToken((...args) => refreshTokenRef.current(...args));
+    });
 
     setLoading(false)
   }, [])
@@ -147,37 +199,7 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const logout = () => {
-    localStorage.removeItem("@TaskCollab:token")
-    localStorage.removeItem("@TaskCollab:refresh")
-    localStorage.removeItem("@TaskCollab:user")
-    delete api.defaults.headers.common["Authorization"]
-    setUser(null)
-    navigate("/login")
-  }
 
-  const refreshToken = async () => {
-    try {
-      const refresh = localStorage.getItem("@TaskCollab:refresh")
-
-      if (!refresh) {
-        throw new Error("No refresh token available")
-      }
-
-      const response = await api.post(`/accounts/login/refresh/`, {
-        refresh,
-      })
-
-      const { access } = response.data
-      localStorage.setItem("@TaskCollab:token", access)
-      api.defaults.headers.common["Authorization"] = `Bearer ${access}`
-
-      return access
-    } catch (error) {
-      logout()
-      throw error
-    }
-  }
 
   return (
     <AuthContext.Provider

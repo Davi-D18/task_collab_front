@@ -6,11 +6,19 @@ export const api = axios.create({
   baseURL: urlApi, 
 })
 
+// Variável para armazenar a função refreshToken do AuthContext
+let authRefreshToken = null;
+
+// Função para configurar o refreshToken do AuthContext
+export const setAuthRefreshToken = (refreshTokenFn) => {
+  authRefreshToken = refreshTokenFn;
+};
+
 // Interceptor para lidar com tokens expirados e formatar erros
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config
+    const originalRequest = error.config;
 
     // Se o erro for 401 (Unauthorized) e não for uma tentativa de refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -23,32 +31,17 @@ api.interceptors.response.use(
         originalRequest._retry = true;
 
         try {
-          // Tenta obter um novo token usando o refreshToken
-          const refreshToken = localStorage.getItem("@TaskCollab:refresh");
-
-          if (!refreshToken) {
-            throw new Error("No refresh token available");
+          // Usa a função refreshToken do AuthContext
+          if (!authRefreshToken) {
+            throw new Error("Auth refresh token function not available");
           }
-
-          const response = await axios.post(`${urlApi}/accounts/login/refresh/`, {
-            refresh: refreshToken,
-          });
-
-          const { access } = response.data;
-
-          // Atualiza o token no localStorage e nos headers
-          localStorage.setItem("@TaskCollab:token", access);
-          api.defaults.headers.common["Authorization"] = `Bearer ${access}`;
-          originalRequest.headers["Authorization"] = `Bearer ${access}`;
-
+          
+          await authRefreshToken(originalRequest);
+          
           // Refaz a requisição original com o novo token
           return api(originalRequest);
         } catch (refreshError) {
-          // Se falhar ao obter novo token, redireciona para login
-          localStorage.removeItem("@TaskCollab:token");
-          localStorage.removeItem("@TaskCollab:refresh");
-          localStorage.removeItem("@TaskCollab:user");
-          window.location.href = "/login";
+          // Erro já tratado no AuthContext
           return Promise.reject(refreshError);
         }
       }
