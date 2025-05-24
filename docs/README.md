@@ -57,13 +57,3 @@ Para começar, recomendamos explorar a [Estrutura do Projeto](./estrutura/estrut
 
 - [Autenticação](./fluxos/autenticacao.md): Registro, login, logout e refresh de token
 - [Tarefas](./fluxos/tarefas.md): Criação, visualização, edição e exclusão de tarefas
-
-## Contribuição
-
-Para contribuir com o desenvolvimento do front-end, siga estas diretrizes:
-
-1. Mantenha a estrutura de pastas existente
-2. Siga os padrões de código estabelecidos
-3. Crie componentes reutilizáveis quando possível
-4. Documente novos componentes e funcionalidades
-5. Escreva testes para novas funcionalidades
