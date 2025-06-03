@@ -1,9 +1,8 @@
-import React from 'react';
-import styles from '../../styles/forms.module.scss';
+import styles from "../../styles/forms.module.scss";
 
 /**
  * Componente reutilizável para campos de seleção
- * 
+ *
  * @param {Object} props - Propriedades do componente
  * @param {string} props.id - ID do campo
  * @param {string} props.label - Rótulo do campo
@@ -14,15 +13,15 @@ import styles from '../../styles/forms.module.scss';
  * @param {Object} props.style - Estilos adicionais para o select
  * @param {React.ReactNode} props.icon - Ícone opcional para exibir antes do select
  */
-const SelectField = ({ 
-  id, 
-  label, 
-  value, 
-  onChange, 
-  options, 
-  disabled = false, 
-  style = {}, 
-  icon = null 
+const SelectField = ({
+  id,
+  label,
+  value,
+  onChange,
+  options,
+  disabled = false,
+  style = {},
+  icon = null,
 }) => {
   return (
     <div className={styles.formControl}>

@@ -1,14 +1,13 @@
-import React from 'react';
-import styles from '../../styles/layout.module.scss';
+import styles from "../../styles/layout.module.scss";
 
 /**
  * Componente de card reutilizável
- * 
+ *
  * @param {Object} props - Propriedades do componente
  * @param {React.ReactNode} props.children - Conteúdo do card
  * @param {string} props.className - Classes adicionais
  */
-const Card = ({ children, className = '', ...rest }) => {
+const Card = ({ children, className = "", ...rest }) => {
   return (
     <div className={`${styles.card} ${className}`} {...rest}>
       {children}
@@ -19,7 +18,7 @@ const Card = ({ children, className = '', ...rest }) => {
 /**
  * Cabeçalho do card
  */
-Card.Header = ({ children, className = '', ...rest }) => {
+Card.Header = ({ children, className = "", ...rest }) => {
   return (
     <div className={`${styles.cardHeader} ${className}`} {...rest}>
       {children}
@@ -30,7 +29,7 @@ Card.Header = ({ children, className = '', ...rest }) => {
 /**
  * Título do card
  */
-Card.Title = ({ children, className = '', ...rest }) => {
+Card.Title = ({ children, className = "", ...rest }) => {
   return (
     <h2 className={`${styles.cardTitle} ${className}`} {...rest}>
       {children}
@@ -41,7 +40,7 @@ Card.Title = ({ children, className = '', ...rest }) => {
 /**
  * Seção de conteúdo do card
  */
-Card.Content = ({ children, className = '', ...rest }) => {
+Card.Content = ({ children, className = "", ...rest }) => {
   return (
     <div className={`${styles.contentSection} ${className}`} {...rest}>
       {children}
@@ -52,7 +51,7 @@ Card.Content = ({ children, className = '', ...rest }) => {
 /**
  * Cabeçalho de seção dentro do card
  */
-Card.SectionHeader = ({ children, className = '', ...rest }) => {
+Card.SectionHeader = ({ children, className = "", ...rest }) => {
   return (
     <h3 className={`${styles.sectionHeader} ${className}`} {...rest}>
       {children}

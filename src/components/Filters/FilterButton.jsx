@@ -1,9 +1,8 @@
-import React from 'react';
-import styles from './FilterButton.module.scss';
+import styles from "./FilterButton.module.scss";
 
 /**
  * Botão de filtro reutilizável
- * 
+ *
  * @param {Object} props - Propriedades do componente
  * @param {string} props.label - Texto do botão
  * @param {boolean} props.active - Se o filtro está ativo
@@ -11,8 +10,8 @@ import styles from './FilterButton.module.scss';
  */
 const FilterButton = ({ label, active, onClick }) => {
   return (
-    <button 
-      className={`${styles.filterButton} ${active ? styles.active : ''}`}
+    <button
+      className={`${styles.filterButton} ${active ? styles.active : ""}`}
       onClick={onClick}
     >
       {label}

@@ -1,11 +1,10 @@
-import React from 'react';
-import { Edit2, Trash2 } from 'lucide-react';
-import Button from '../UI/Button';
-import styles from '../../styles/layout.module.scss';
+import { Edit2, Trash2 } from "lucide-react";
+import styles from "../../styles/layout.module.scss";
+import Button from "../UI/Button";
 
 /**
  * Componente para o cabeçalho de uma tarefa
- * 
+ *
  * @param {Object} props - Propriedades do componente
  * @param {string} props.title - Título da tarefa
  * @param {string} props.editedTitle - Título editado
@@ -16,15 +15,15 @@ import styles from '../../styles/layout.module.scss';
  * @param {Function} props.onDelete - Função para excluir tarefa
  * @param {boolean} props.deleting - Se está excluindo a tarefa
  */
-const TaskHeader = ({ 
-  title, 
-  editedTitle, 
-  editing, 
-  onEdit, 
-  onChange, 
-  onSave, 
-  onDelete, 
-  deleting 
+const TaskHeader = ({
+  title,
+  editedTitle,
+  editing,
+  onEdit,
+  onChange,
+  onSave,
+  onDelete,
+  deleting,
 }) => {
   return (
     <div className={styles.cardHeader}>
@@ -41,20 +40,13 @@ const TaskHeader = ({
         ) : (
           <>
             {title}
-            <button 
-              className={styles.editButton} 
-              onClick={onEdit}
-            >
+            <button className={styles.editButton} onClick={onEdit}>
               <Edit2 size={14} />
             </button>
           </>
         )}
       </div>
-      <Button 
-        variant="delete" 
-        onClick={onDelete} 
-        disabled={deleting}
-      >
+      <Button variant="delete" onClick={onDelete} disabled={deleting}>
         <Trash2 size={18} />
         <span>Excluir</span>
       </Button>

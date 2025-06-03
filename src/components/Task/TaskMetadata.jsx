@@ -1,12 +1,22 @@
-import React from 'react';
-import { AlertCircle, Calendar, CheckCircle2, Clock, Edit2 } from 'lucide-react';
-import { formatDate } from '../../utils/formatDate';
-import { getPriorityColor, prioridadeMap, statusMap, getStatusInfo } from '../../utils/taskUtils';
-import styles from '../../styles/layout.module.scss';
+import {
+  AlertCircle,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  Edit2,
+} from "lucide-react";
+import styles from "../../styles/layout.module.scss";
+import { formatDate } from "../../utils/formatDate";
+import {
+  getPriorityColor,
+  getStatusInfo,
+  prioridadeMap,
+  statusMap,
+} from "../../utils/taskUtils";
 
 /**
  * Componente para exibir e editar metadados de uma tarefa
- * 
+ *
  * @param {Object} props - Propriedades do componente
  * @param {Object} props.task - Dados da tarefa
  * @param {Function} props.onUpdateTask - Função para atualizar a tarefa
@@ -19,11 +29,11 @@ const TaskMetadata = ({ task, onUpdateTask, updating }) => {
   const renderStatusIcon = () => {
     const statusInfo = getStatusInfo(task.status_display);
     switch (statusInfo.iconType) {
-      case 'CheckCircle2':
+      case "CheckCircle2":
         return <CheckCircle2 size={16} color="#10b981" />;
-      case 'AlertCircle':
+      case "AlertCircle":
         return <AlertCircle size={16} color="#f59e0b" />;
-      case 'Clock':
+      case "Clock":
       default:
         return <Clock size={16} color="#6b7280" />;
     }
@@ -36,14 +46,14 @@ const TaskMetadata = ({ task, onUpdateTask, updating }) => {
           <Clock size={16} />
           <span>Criada em {formatDate(task.criado_em)}</span>
         </div>
-        
+
         {task.atualizado_em && (
           <div className={styles.dateItem}>
             <Edit2 size={16} />
             <span>Atualizada em {formatDate(task.atualizado_em)}</span>
           </div>
         )}
-        
+
         {task.concluido_em && (
           <div className={styles.dateItem}>
             <CheckCircle2 size={16} />
@@ -51,7 +61,7 @@ const TaskMetadata = ({ task, onUpdateTask, updating }) => {
           </div>
         )}
       </div>
-      
+
       <div className={styles.flexRow}>
         <div className={styles.metaItem}>
           <label htmlFor="priority" className={styles.label}>
@@ -92,7 +102,7 @@ const TaskMetadata = ({ task, onUpdateTask, updating }) => {
             </select>
           </div>
         </div>
-        
+
         <div className={styles.metaItem}>
           <label htmlFor="prazo" className={styles.label}>
             Prazo:

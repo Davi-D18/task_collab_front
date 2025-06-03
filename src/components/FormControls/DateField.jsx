@@ -1,9 +1,8 @@
-import React from 'react';
-import styles from '../../styles/forms.module.scss';
+import styles from "../../styles/forms.module.scss";
 
 /**
  * Componente reutilizável para campos de data
- * 
+ *
  * @param {Object} props - Propriedades do componente
  * @param {string} props.id - ID do campo
  * @param {string} props.label - Rótulo do campo
@@ -12,13 +11,13 @@ import styles from '../../styles/forms.module.scss';
  * @param {boolean} props.disabled - Se o campo está desabilitado
  * @param {React.ReactNode} props.icon - Ícone opcional para exibir antes do campo
  */
-const DateField = ({ 
-  id, 
-  label, 
-  value, 
-  onChange, 
-  disabled = false, 
-  icon = null 
+const DateField = ({
+  id,
+  label,
+  value,
+  onChange,
+  disabled = false,
+  icon = null,
 }) => {
   return (
     <div className={styles.formControl}>

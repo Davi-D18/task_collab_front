@@ -1,9 +1,8 @@
-import React from 'react';
-import styles from '../../styles/forms.module.scss';
+import styles from "../../styles/forms.module.scss";
 
 /**
  * Componente reutilizável para campos de texto multilinha
- * 
+ *
  * @param {Object} props - Propriedades do componente
  * @param {string} props.id - ID do campo
  * @param {string} props.value - Valor do campo
@@ -11,12 +10,12 @@ import styles from '../../styles/forms.module.scss';
  * @param {boolean} props.disabled - Se o campo está desabilitado
  * @param {boolean} props.autoFocus - Se o campo deve receber foco automaticamente
  */
-const TextareaField = ({ 
-  id, 
-  value, 
-  onChange, 
-  disabled = false, 
-  autoFocus = false 
+const TextareaField = ({
+  id,
+  value,
+  onChange,
+  disabled = false,
+  autoFocus = false,
 }) => {
   return (
     <textarea
