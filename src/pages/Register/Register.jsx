@@ -1,4 +1,4 @@
-import { AlertCircle, Clock } from "lucide-react";
+import { CircleCheckBig } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
@@ -59,13 +59,13 @@ const Register = () => {
     <div className={styles.registerContainer}>
       <div className={styles.registerCard}>
         <div className={styles.logoContainer}>
-          <Clock size={40} className={styles.logoIcon} />
-          <h1 className={styles.logoText}>TimeCapsule</h1>
+          <CircleCheckBig size={40} className={styles.logoIcon} />
+          <h1 className={styles.logoText}>TaskCollab</h1>
         </div>
 
         <h2 className={styles.title}>Crie sua conta</h2>
         <p className={styles.subtitle}>
-          Comece a guardar suas memórias para o futuro
+          Crie uma conta para acessar e gerenciar suas tarefas
         </p>
 
         <form onSubmit={handleSubmit} className={styles.form}>
