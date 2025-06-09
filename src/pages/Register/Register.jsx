@@ -86,7 +86,7 @@ const Register = () => {
             />
             {errors.username && (
               <div className={styles.fieldError}>
-                <AlertCircle size={14} />
+                <CircleCheckBig size={14} />
                 <span>{errors.username}</span>
               </div>
             )}
@@ -109,7 +109,7 @@ const Register = () => {
             />
             {errors.email && (
               <div className={styles.fieldError}>
-                <AlertCircle size={14} />
+                <CircleCheckBig size={14} />
                 <span>{errors.email}</span>
               </div>
             )}
@@ -132,7 +132,7 @@ const Register = () => {
             />
             {errors.password && (
               <div className={styles.fieldError}>
-                <AlertCircle size={14} />
+                <CircleCheckBig size={14} />
                 <span>{errors.password}</span>
               </div>
             )}
@@ -155,7 +155,7 @@ const Register = () => {
             />
             {errors.confirmPassword && (
               <div className={styles.fieldError}>
-                <AlertCircle size={14} />
+                <CircleCheckBig size={14} />
                 <span>{errors.confirmPassword}</span>
               </div>
             )}
